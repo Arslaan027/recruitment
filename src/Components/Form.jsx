@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/Images/newlogo.png";
+import Modal from "./Modal";
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -17,8 +18,9 @@ const Form = () => {
     experienceDuration: "",
     currentCTC: "",
     expectedCTC: "",
-    coverLetter: "", // New field
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const positions = [
     "Sales Executive",
@@ -39,18 +41,44 @@ const Form = () => {
     }));
   };
 
+  const handleExperienceChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      experience: value,
+    }));
+    if (value === "Yes") {
+      setIsModalOpen(true);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
   };
 
+  const handleModalSubmit = (e) => {
+    e.preventDefault();
+    setIsModalOpen(false);
+    // Add logic to update formData with modal data if needed
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="bg-gray-200 min-h-screen flex items-center justify-center">
       <div className="w-4/5 md:w-3/5 lg:w-2/5 mx-auto bg-white shadow-lg p-8 rounded-xl my-5 md:my-5 lg:my-5">
-        <h2 className="text-2xl font-semibold mb-6 text-center flex items-center justify-center">
-          <img src={logo} alt="company logo" className="h-10 mr-2" />
+        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-6 text-center flex items-center justify-center">
+          <img
+            src={logo}
+            alt="company logo"
+            className="h-6 sm:h-8 md:h-10 lg:h-12 mr-2"
+          />
           Job Application
         </h2>
+
         <form onSubmit={handleSubmit} className="flex flex-wrap -mx-4">
           {/* Section 1 */}
           <div className="w-full md:w-1/2 px-4 mb-5">
@@ -175,7 +203,7 @@ const Form = () => {
           </div>
 
           {/* Section 2 */}
-          <div className="w-full md:w-1/2 px-4">
+          <div className="w-full md:w-1/2 px-4 mb-5">
             {/* Year of Passing */}
             <div className="mb-5">
               <label
@@ -193,8 +221,8 @@ const Form = () => {
                 required
               >
                 <option value="">Select Year</option>
-                {years.map((year, index) => (
-                  <option key={index} value={year}>
+                {years.map((year) => (
+                  <option key={year} value={year}>
                     {year}
                   </option>
                 ))}
@@ -239,7 +267,7 @@ const Form = () => {
               />
             </div>
 
-            {/* LinkedIn Profile */}
+            {/* LinkedIn */}
             <div className="mb-5">
               <label
                 htmlFor="linkedin"
@@ -254,6 +282,24 @@ const Form = () => {
                 value={formData.linkedin}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                required
+              />
+            </div>
+            {/* Adhaarcard Upload */}
+            <div className="mb-5">
+              <label
+                htmlFor="Adhaarcard"
+                className="block text-gray-700 text-sm font-medium mb-1"
+              >
+                Upload Adhaarcard
+              </label>
+              <input
+                type="file"
+                id="Adhaarcard"
+                name="Adhaarcard"
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                required
               />
             </div>
 
@@ -263,13 +309,13 @@ const Form = () => {
                 htmlFor="experience"
                 className="block text-gray-700 text-sm font-medium mb-1"
               >
-                Do you have any experience?
+                Do you have experience?
               </label>
               <select
                 id="experience"
                 name="experience"
                 value={formData.experience}
-                onChange={handleChange}
+                onChange={handleExperienceChange}
                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                 required
               >
@@ -277,99 +323,25 @@ const Form = () => {
                 <option value="Yes">Yes</option>
               </select>
             </div>
-            <div className="mb-5">
-              <label
-                htmlFor="resume"
-                className="block text-gray-700 text-sm font-medium mb-1"
-              >
-                Upload AdhaarCard
-              </label>
-              <input
-                type="file"
-                id="resume"
-                name="resume"
-                onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
-              />
-            </div>
-
-            {/* Conditional Fields: If Experience is Yes */}
-            {formData.experience === "Yes" && (
-              <>
-                {/* Experience Duration */}
-                <div className="mb-5">
-                  <label
-                    htmlFor="experienceDuration"
-                    className="block text-gray-700 text-sm font-medium mb-1"
-                  >
-                    Duration of Experience
-                  </label>
-                  <input
-                    type="text"
-                    id="experienceDuration"
-                    name="experienceDuration"
-                    value={formData.experienceDuration}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    placeholder="e.g., 2 years 5 months"
-                    required
-                  />
-                </div>
-
-                {/* Current CTC */}
-                <div className="mb-5">
-                  <label
-                    htmlFor="currentCTC"
-                    className="block text-gray-700 text-sm font-medium mb-1"
-                  >
-                    Current CTC
-                  </label>
-                  <input
-                    type="text"
-                    id="currentCTC"
-                    name="currentCTC"
-                    value={formData.currentCTC}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
-                  />
-                </div>
-
-                {/* Expected CTC */}
-                <div className="mb-5">
-                  <label
-                    htmlFor="expectedCTC"
-                    className="block text-gray-700 text-sm font-medium mb-1"
-                  >
-                    Expected CTC
-                  </label>
-                  <input
-                    type="text"
-                    id="expectedCTC"
-                    name="expectedCTC"
-                    value={formData.expectedCTC}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
-                  />
-                </div>
-                {/* AdhaarCard Upload */}
-              </>
-            )}
           </div>
 
           {/* Submit Button */}
-          <div className="w-full text-center mt-8">
+          <div className="w-full px-4 mb-5 text-center">
             <button
               type="submit"
-              className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
               Submit
             </button>
           </div>
         </form>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSubmit={handleModalSubmit}
+      />
     </div>
   );
 };
